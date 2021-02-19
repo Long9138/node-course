@@ -1,0 +1,108 @@
+const fs = require('fs');
+fs.unlink('zyl.html', function() {
+  console.log('成功删除！')
+})// 1、数组不能进行二进制数据的操作
+// 2、js数组不像java、python等语言效率高
+// 3、buffer内存空间开辟出固定大小的内存
+
+// 将字符串转成buffer对象
+let str = 'helloworld'
+let buf = Buffer.from(str)
+// console.log(buf) 
+
+// 输出buffer内容
+// console.log(buf.toString())
+
+
+// 开辟一个空的buffer(缓存区)
+let buf1 = Buffer.alloc(10)
+// buf1[0] = 256
+console.log(buf1)
+
+let buf2 = Buffer.allocUnsafe(10)
+console.log(buf2)hello3hello3.txt的内容const fs = require('fs');
+// wirte =>w       read =>r       append =>a
+// fs.writeFile('test.txt', 'ssd', { flag: 'a', encoding: 'utf-8' }, function (err) {
+//   if (err) console.log('写入内容出错')
+//   else console.log('写入内容成功')
+// })
+
+function writefs(path, content) {
+  return new Promise(function (resolve, reject) {
+    fs.writeFile(path, content, { flag: 'a', encoding: 'utf-8' }, function (err) {
+      if (err) {
+        // console.log('写入内容出错')
+        reject(err)
+      } else {
+        // console.log('写入内容成功')
+        resolve(err)
+      }
+    })
+  })
+}
+
+// async function writeList () {
+//   await writefs('zyl.txt','1今天吃烧烤\n')
+//   await writefs('zyl.txt','2今天吃烧烤\n')
+//   await writefs('zyl.txt','3今天吃烧烤\n')
+//   await writefs('zyl.txt','4今天吃烧烤\n')
+// }
+
+async function writeList () {
+  await writefs('zyl.html','<h1>1今天吃烧烤</h1>')
+  await writefs('zyl.html','<h1>2今天吃烧烤</h1>')
+  await writefs('zyl.html','<h1>3今天吃烧烤</h1>')
+  await writefs('zyl.html','<h1>4今天吃烧烤</h1>')
+}
+
+writeList()hello2const fs = require('fs');
+// 导入文件模块
+// node,读写文件也有同步和异步的接口
+
+
+// 同步，等待和阻塞
+// let content = fs.readFileSync('hello.txt', { flag: 'r', encoding: 'utf-8' })
+// 异步
+// fs.readFile('hello.txt', { flag: 'r', encoding: 'utf-8' }, function (err, data) {
+//   if (err) {
+//     console.log(err)
+//   } else {
+//     console.log(data)
+//   }
+//   // console.log(456)
+// })
+
+function fsRead(path) {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(path, { flag: 'r', encoding: 'utf-8' }, function (err, data) {
+      if (err) {
+        // console.log(err)
+        // 失败执行的内容
+        reject(err)
+
+      } else {
+        // console.log(data)
+        // 成功执行的内容
+        resolve(data)
+
+      }
+      console.log(456)
+    })
+  })
+}
+
+// console.log(123)
+
+// let w1 = fsRead('hello.txt')
+// w1.then(res => { console.log(res) }).catch(rej => { console.log(rej) })
+
+async function ReadList() {
+  let file2 = await fsRead('hello.txt');
+  let file3 = await fsRead(file2 + '.txt');
+  let file3Content = await fsRead(file3 + '.txt');
+  console.log(file3Content)
+}
+
+ReadList()
+
+// console.log(content)
