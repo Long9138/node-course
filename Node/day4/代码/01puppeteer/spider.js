@@ -87,7 +87,6 @@ let httpUrl = 'https://sobooks.cc/';
       // console.log(arr)
       return arr;
     })
-
     page.close()
     // 通过获取的数组的地址和标题去请求书籍的详情页
     arrPage.forEach(async (pageObj, i) => {
