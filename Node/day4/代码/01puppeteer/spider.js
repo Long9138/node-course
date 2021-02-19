@@ -50,6 +50,7 @@ let httpUrl = 'https://sobooks.cc/';
       text = text.substring(1, text.length - 2).trim();
       return text;
     })
+
     page.close()
     return pageNum;
   };
