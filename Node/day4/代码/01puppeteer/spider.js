@@ -16,7 +16,9 @@ let httpUrl = 'https://sobooks.cc/';
     slowMo: 250
   };
   let options = { headless: true };
-  let browser = await puppeteer.launch(debugOptions);
+  let browser = await puppeteer.launch(options);
+
+  let bookArr = []
 
   // 将延迟函数封装成promise对象
   async function wait(milliSeconds) {
@@ -90,10 +92,20 @@ let httpUrl = 'https://sobooks.cc/';
 
 
     page.close()
+    console.log(arrPage, arrPage.length)
     // 通过获取的数组的地址和标题去请求书籍的详情页
     arrPage.forEach(async (pageObj, i) => {
       await wait(8000 * i);
-      getPageInfo(pageObj)
+      await getPageInfo(pageObj)
+      console.log(i)
+      // 最后存进book.txt文本中
+      if ((i + 1) === arrPage.length) {
+        let str = JSON.stringify(bookArr)
+        console.log(str)
+        fs.writeFile('book.json', str, { encoding: 'utf-8' }, () => {
+          console.log('已存进book.json')
+        })
+      }
     })
   }
 
@@ -120,11 +132,17 @@ let httpUrl = 'https://sobooks.cc/';
 
       aHref = aHref._remoteObject.value
       aHref = aHref.split('?url=')[1]
-      let content = `{"title":"${pageObj.title}","href":"${aHref}"}---\n`
-      fs.writeFile('book.txt', content, { flag: 'a' }, () => {
-        console.log('已将书下载路径写入：' + pageObj.title)
-        page.close()
-      })
+      // let content = `{"title":"${pageObj.title}","href":"${aHref}"}---\n`
+      let content = {
+        title: pageObj.title,
+        href: aHref
+      }
+      bookArr.push(content)
+      console.log('已获取书下载信息：' + pageObj.title)
+      // fs.writeFile('book.txt', content, { flag: 'a' }, () => {
+      //   console.log('已将书下载路径写入：' + pageObj.title)
+      //   page.close()
+      // })
       // console.log(aHref, '-------aHref')
     } else page.close()
   }
