@@ -13,12 +13,14 @@ let httpUrl = 'https://sobooks.cc/';
     // 设置为有界面，如果为true，即为无界面
     headless: false,
     // 设置放慢每个步骤的毫秒数
-    slowMo: 250
+    // slowMo: 250
   };
   let options = { headless: true };
-  let browser = await puppeteer.launch(options);
-
+  let browser = await puppeteer.launch(debugOptions);
   let bookArr = []
+  let pageNum = 200;
+  let num = 0;
+  let count = 0;
 
   // 将延迟函数封装成promise对象
   async function wait(milliSeconds) {
@@ -37,7 +39,7 @@ let httpUrl = 'https://sobooks.cc/';
     page.on('request', interceptedRequest => {
       // 通过URL模块对请求的地址进行解析
       let urlObj = new URL(interceptedRequest.url())
-      if (urlObj.hostname === 'googleads.g.doubleclick.net') {
+      if (urlObj.hostname === 'google') {
         // 如果是谷歌的广告请求，那么就放弃当次请求，因为谷歌广告响应太慢
         interceptedRequest.abort()
       } else {
@@ -56,11 +58,11 @@ let httpUrl = 'https://sobooks.cc/';
     return pageNum;
   };
 
-  let pageNum = await getALLNum();
+  // let pageNum = await getALLNum();
   // console.log(pageNum);
 
-  async function pageList(num) {
-    let pageListUrl = `${httpUrl}page/${num}`
+  async function pageList() {
+    let pageListUrl = `${httpUrl}page/${pageNum}`
     let page = await browser.newPage();
     // 截取谷歌请求
     await page.setRequestInterception(true);
@@ -68,7 +70,7 @@ let httpUrl = 'https://sobooks.cc/';
     page.on('request', interceptedRequest => {
       // 通过URL模块对请求的地址进行解析
       let urlObj = new URL(interceptedRequest.url())
-      if (urlObj.hostname === 'googleads.g.doubleclick.net') {
+      if (urlObj.hostname === 'google') {
         // 如果是谷歌的广告请求，那么就放弃当次请求，因为谷歌广告响应太慢
         interceptedRequest.abort()
       } else {
@@ -90,26 +92,16 @@ let httpUrl = 'https://sobooks.cc/';
       return arr;
     })
 
-
     page.close()
-    console.log(arrPage, arrPage.length)
     // 通过获取的数组的地址和标题去请求书籍的详情页
-    arrPage.forEach(async (pageObj, i) => {
-      await wait(8000 * i);
-      await getPageInfo(pageObj)
-      console.log(i)
-      // 最后存进book.txt文本中
-      if ((i + 1) === arrPage.length) {
-        let str = JSON.stringify(bookArr)
-        console.log(str)
-        fs.writeFile('book.json', str, { encoding: 'utf-8' }, () => {
-          console.log('已存进book.json')
-        })
-      }
-    })
+    console.log(arrPage)
+    getPageInfo(arrPage)
+
+
   }
 
-  async function getPageInfo(pageObj) {
+  async function getPageInfo(arrPage) {
+    let pageObj = arrPage[count]
     let page = await browser.newPage();
     // 截取谷歌请求
     await page.setRequestInterception(true);
@@ -117,7 +109,7 @@ let httpUrl = 'https://sobooks.cc/';
     page.on('request', interceptedRequest => {
       // 通过URL模块对请求的地址进行解析
       let urlObj = new URL(interceptedRequest.url())
-      if (urlObj.hostname === 'googleads.g.doubleclick.net') {
+      if (urlObj.hostname === 'google') {
         // 如果是谷歌的广告请求，那么就放弃当次请求，因为谷歌广告响应太慢
         interceptedRequest.abort()
       } else {
@@ -132,22 +124,36 @@ let httpUrl = 'https://sobooks.cc/';
 
       aHref = aHref._remoteObject.value
       aHref = aHref.split('?url=')[1]
-      // let content = `{"title":"${pageObj.title}","href":"${aHref}"}---\n`
       let content = {
         title: pageObj.title,
         href: aHref
       }
       bookArr.push(content)
       console.log('已获取书下载信息：' + pageObj.title)
-      // fs.writeFile('book.txt', content, { flag: 'a' }, () => {
-      //   console.log('已将书下载路径写入：' + pageObj.title)
-      //   page.close()
-      // })
-      // console.log(aHref, '-------aHref')
-    } else page.close()
-  }
 
-  pageList(200)
+      fs.writeFile('./bookList/book' + ++num + '.txt', JSON.stringify(content), { flag: 'a' }, () => {
+        console.log(`已将书${count}下载路径写入：${pageObj.title}`)
+        count++
+        page.close()
+
+        if (count == arrPage.length) {
+          count = 0
+          pageNum++;
+          pageList()
+          console.log(`------------第${pageNum}页下载链接收集完成！-------------`)
+        } else {
+          getPageInfo(arrPage)
+        }
+      })
+
+    } else {
+      count++
+      page.close()
+      getPageInfo(arrPage)
+    }
+  }
+ 
+  pageList()
   // getPageInfo({ href: 'https://sobooks.cc/books/14620.html', title: 'abc' })
 })();
 
