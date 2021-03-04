@@ -1,7 +1,7 @@
 let puppeteer = require('puppeteer');
 let axios = require('axios');
 let fs = require('fs');
-let { fsRead, fsWrite } = require('./johnnyFs');
+let { read, write } = require('./johnnyFs');
 
 (async function () {
   let debugOptions = {
@@ -31,7 +31,7 @@ let { fsRead, fsWrite } = require('./johnnyFs');
   // 解析book.json文件
   async function parseTxt() {
     // 读取电子书信息
-    let bookArr = await fsRead('book.json')
+    let bookArr = await read('book.json')
     // 解析
     bookArr = JSON.parse(bookArr)
 
