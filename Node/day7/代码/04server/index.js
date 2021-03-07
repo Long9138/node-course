@@ -42,5 +42,5 @@ app.on('/movies', (req, res) => {
 })
 
 app.run(80, () => {
-  console.log("服务器已启动：" + "htpp://127.0.0.1")
+  console.log("服务器已启动：" + "http://127.0.0.1")
 })
