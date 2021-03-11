@@ -1,0 +1,31 @@
+h1{
+    text-align: center;
+}
+
+.content{
+    width: 1000px;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px auto;
+}
+
+.bookItem{
+    width: 250px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.bookItem h3{
+    font-size: 16px;
+    color: #555;
+    width: 220px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.bookItem a {
+    text-decoration: none;
+}

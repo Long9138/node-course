@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>首页</h1>
+    <div class="content">
+        
+        {%for {books} %}
+            <div class="bookItem">
+                <a href="{{item.bookUrl}}">
+                        <img src="{{item.bookimg}}" alt="">
+                        <h3>{{item.bookname}}</h3>
+                        <h5>{{item.pubcompany}}</h5>
+                </a>
+            </div>
+        {%endfor%}
+        
+
+        
+        <div class="btnList">
+            <div class="btn"><a href="">上一页</a></div>
+            <div class="btn"><a href="/page/2">下一页</a></div>
+        </div>
+    </div>
+</body>
+</html>

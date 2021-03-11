@@ -1,0 +1,11 @@
+{
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "lcapp": {
+      "version": "0.8.0",
+      "resolved": "https://registry.npmjs.org/lcapp/-/lcapp-0.8.0.tgz",
+      "integrity": "sha512-2rpT16laCc/b3SIqYeM9VzldR2ApQ2imlhfKxAwYlEGC9mEIFZLp1Ri8OUTDdKsswDm4YgEyP+ExfQPia44mCA=="
+    }
+  }
+}
