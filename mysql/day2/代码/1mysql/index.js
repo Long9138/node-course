@@ -17,7 +17,7 @@ con.connect((err) => {
   } else {
     console.log("数据库连接成功")
   }
-});
+}); 
 // 执行数据库语句
 // 执行查询语句
 // let strSql = "select * from user"
